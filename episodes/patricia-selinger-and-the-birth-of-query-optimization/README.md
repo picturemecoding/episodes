@@ -5,7 +5,7 @@
 A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization — a technique so sound that it underpins virtually every relational database in use today.
 
 **Episode type:** Topic  
-**Hosts:** Mike + co-host
+**Hosts:** Mike & Erik
 
 ---
 
@@ -136,7 +136,7 @@ This idea — tracking a Pareto frontier of cost vs. output properties — is a 
 
 - **The "interesting orders" naming**: The term itself is charmingly informal for something so mathematically precise. It's remained in the literature for 45+ years.
 
-- **Harvard Applied Math → database internals**: A great "unlikely path" story — ask Mike to reflect on how often the deepest systems work comes from people with non-traditional CS backgrounds.
+- **Harvard Applied Math → database internals**: A great "unlikely path" story — ask Mike and Erik to reflect on how often the deepest systems work comes from people with non-traditional CS backgrounds.
 
 - **The ACM Queue interview (2006)**: Conducted by James Hamilton (later of AWS fame), Selinger is candid about the evolution of the optimizer, what she'd do differently, and the challenge of moving research to product. Worth quoting directly.
 
@@ -158,7 +158,7 @@ This idea — tracking a Pareto frontier of cost vs. output properties — is a 
 
 ## Music Segment
 
-_[To be filled in by Mike and co-host — what are you listening to?]_
+_[Mike and Erik — what are you listening to?]_
 
 ---
 

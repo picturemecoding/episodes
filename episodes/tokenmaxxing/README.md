@@ -5,14 +5,10 @@
 
 ## Episode Summary
 
-Inspired by Steve Yegge's January 2026 essay ["Welcome to Gas Town"](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04), Erik and Mike dig into the emerging world of multi-agent software development. What does it actually mean to "manage a team of agents"? How did we get here so fast? And what's it actually like in practice? The episode covers the landscape of available tools, the key ideas behind agent orchestration, and Erik and Mike's personal experiences trying to get a colony of AI agents to do useful work — without losing their minds or their context windows.
+Inspired by Steve Yegge's January 2026 essay ["Welcome to Gas Town"](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04), Erik, Mike and special guest Bob Farzin dig into the emerging world of multi-agent software development. What does it actually mean to "manage a team of agents"? How did we get here so fast? And what's it actually like in practice?
 
----
+The episode covers the landscape of available tools, the key ideas behind agent orchestration, and Erik and especially Bob's  personal experiences trying to get a colony of AI agents to do useful work — without losing their minds or their context windows.
 
-## 🎵 Music Segment
-
-- **Erik:** *[What are you listening to?]*
-- **Mike:** *[What are you listening to?]*
 
 ---
 

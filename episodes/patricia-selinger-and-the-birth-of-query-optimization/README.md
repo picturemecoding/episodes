@@ -153,6 +153,7 @@ This idea — tracking a Pareto frontier of cost vs. output properties — is a 
 - [Patricia Selinger — IBM History](https://www.ibm.com/history/patricia-selinger)
 - [System R: Database Research Retrospective — TODS 1981](https://dl.acm.org/doi/10.1145/319996.319997)
 - Graefe, G. (1995). *The Cascades Framework for Query Optimization* — direct intellectual successor
+- Leis et al. (2015). [*How Good Are Query Optimizers, Really?*](https://vldb.org/pvldb/vol9/p204-leis.pdf) PVLDB Vol. 9 — introduces the Join Order Benchmark (JOB) and empirically audits modern optimizers; finds cardinality estimation errors (not cost models or plan enumeration) are the dominant cause of bad plans — a direct stress-test of Selinger's independence assumption
 
 ---
 

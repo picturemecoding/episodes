@@ -5,13 +5,13 @@
 A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization — a technique so sound that it underpins virtually every relational database in use today.
 
 **Episode type:** Topic\
-**Hosts:** Mike & Erik ---
+**Hosts:** Mike & Erik
 
 ## Music Segment
 
 Erik Music:
 
-Mike Music:
+Mike Music: *Into Oblivion* - Lamb of God
 
 ------------------------------------------------------------------------
 

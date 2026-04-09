@@ -16,12 +16,13 @@ The episode covers the landscape of available tools, the key ideas behind agent 
 
 - **Pre-2024** — LLMs used for code completion and generation (GitHub Copilot, 2021), but agents are stateless and single-turn. No ability to run tools, hold state, or iterate.
 - **Early 2024** — Research groups begin experimenting with giving LLMs access to terminals, browsers, and editors. The paradigm shifts from "code generation" to "software engineering agents."
-- **March 2024** — [Cognition Labs introduces Devin](https://cognition.ai/blog/introducing-devin), billing it as "the first AI software engineer." It achieves **13.86%** on SWE-bench — far above the prior state-of-the-art of 1.96%. The demo is impressive; the discourse is explosive.
+- **March 2024** — [Cognition Labs introduces Devin](https://cognition.ai/blog/introducing-devin), billing it as "the first AI software engineer." It achieves **13.86%** on SWE-bench — far above the prior state-of-the-art of 1.96%. The demo is impressive; the discourse is explosive. [Didn't they fake their results with human coders?]
 - **May 2024** — Princeton/Stanford researchers publish [SWE-agent](https://arxiv.org/abs/2405.15793) (NeurIPS 2024), an open-source agent that achieves 12.5% pass@1 on SWE-bench by introducing the idea of an **Agent-Computer Interface (ACI)** — a purpose-built interface between the agent and its tools.
 - **Mid-2024** — OpenAI introduces [SWE-bench Verified](https://openai.com/index/introducing-swe-bench-verified/), a human-validated subset of the benchmark to address concerns about contamination and evaluation quality. The benchmark ecosystem matures.
 - **Late 2024** — Claude 3.5 Sonnet hits **49%** on SWE-bench Verified. The pace of improvement is startling.
 - **May 2025** — Anthropic releases **Claude Code**, a CLI-native agentic coding tool. It quickly becomes the most-used and most-loved AI coding tool by 2026.
 - **2025** — **Cursor** ships full agent mode with multi-agent orchestration. GitHub Copilot adds agent mode. The tooling landscape explodes.
+- **October 13, 2025** - Steve Yegge publishes ["Introducing Beads: A coding agent memory system"](https://steve-yegge.medium.com/introducing-beads-a-coding-agent-memory-system-637d7d92514a), about his task-tracker for agents, necessitated by repeatedly building and throwing away stuff.
 - **January 1, 2026** — Steve Yegge publishes ["Welcome to Gas Town"](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04) and releases [Gas Town on GitHub](https://github.com/steveyegge/gastown) — a multi-agent orchestration framework built on top of Claude Code. He follows up with ["The Future of Coding Agents"](https://steve-yegge.medium.com/the-future-of-coding-agents-e9451a84207c).
 - **Early 2026** — Claude Opus 4.1 scores **74.5%** on SWE-bench. The leap from 1.96% to 74.5% in roughly two years is one of the most dramatic benchmark progressions in AI history.
 
@@ -32,7 +33,7 @@ The episode covers the landscape of available tools, the key ideas behind agent 
 ### [SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770)
 *Jimenez et al., 2023*
 
-The benchmark that defined the field. SWE-bench presents agents with real GitHub issues from production open-source Python repositories and asks them to generate a patch that resolves the problem. It reframed evaluation of coding AI from "can it write a function?" to "can it fix a real bug in a real codebase?" — a much more meaningful bar.
+Thiis benchmark has come to define the field: we see it referenced in all the announcements for the latest models. The way it works is SWE-bench presents agents with real GitHub issues from production open-source Python repositories and asks them to generate a patch that resolves the problem. It reframed evaluation of coding AI from "can it write a function?" to "can it fix a real bug in a real codebase?" — arguably a much more meaningful bar.
 
 > Key idea: evaluation should reflect actual software engineering tasks, not toy problems.
 
@@ -57,7 +58,7 @@ Not a traditional paper, but a watershed moment. Devin's demo — autonomously s
 ## Key Concepts
 
 - **Agent Orchestration** — The practice of having one agent (a "mayor," planner, or coordinator) direct a team of other agents (coders, reviewers, testers), routing work and managing state.
-- **Beads** (Gas Town) — Yegge's lightweight, Git-tracked issue tracker. Each "bead" is a JSON object with an ID, description, status, and assignee — the atomic unit of work in a Gas Town colony. Solves the problem of agents losing context between sessions.
+- **Beads** (Gas Town) — Yegge's lightweight, Git-tracked issue tracker. Each "bead" is a JSON object with an ID, description, status, and assignee — the atomic unit of work in a Gas Town colony. Solves the problem of agents losing context between sessions and also ameliorates the large-markdown-planning-docs dementia problems (Yegge uses that word "dementia").
 - **Context Window Management** — The core practical challenge of multi-agent development. Each agent has a limited context window; when it fills up, the agent forgets. Hence: *TokenMaxxing* — trying to get the most done before the window runs out.
 - **Agent-Computer Interface (ACI)** — The interface layer between an agent and its tools. Analogous to a GUI for humans. Good ACI design is a significant multiplier on agent effectiveness.
 - **SWE-bench** — The standard benchmark for autonomous software engineering agents. Tasks are real GitHub issues; success means a passing test suite.
@@ -92,6 +93,7 @@ Not a traditional paper, but a watershed moment. Devin's demo — autonomously s
 
 ## Resources & Further Reading
 
+- ["Introducing Beads: A coding agent memory system"](https://steve-yegge.medium.com/introducing-beads-a-coding-agent-memory-system-637d7d92514a)
 - [Welcome to Gas Town](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04) — Steve Yegge's original essay
 - [The Future of Coding Agents](https://steve-yegge.medium.com/the-future-of-coding-agents-e9451a84207c) — Yegge's follow-up
 - [Gas Town on GitHub](https://github.com/steveyegge/gastown) — The actual tool

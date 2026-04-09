@@ -2,9 +2,9 @@
 
 ## Episode Overview
 
-A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization — a technique so sound that it underpins virtually every relational database in use today.
+A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization — a technique that underpins virtually every relational database in use today.
 
-**Episode type:** Topic\
+**Episode type:** Topic
 **Hosts:** Mike & Erik
 
 ## Music Segment
@@ -77,7 +77,7 @@ SELECT a,b FROM C
 
 -   Segment scan is only option because there are no predicates
 
-```         
+```
 SELECT a,b FROM C WHERE a = 10
 ```
 
@@ -86,7 +86,7 @@ SELECT a,b FROM C WHERE a = 10
     -   Index scan onfull scan or index scan if there's an index on A
     -   Probably uses index scan path (i think maybe there's case where the index loses, say if there are only 2 values of "a")
 
-```         
+```
 SELECT a,b FROM C WHERE a = 10 and b > 100
 ```
 
@@ -95,7 +95,7 @@ SELECT a,b FROM C WHERE a = 10 and b > 100
     -   index scan on a
     -   index scan on b
 
-```         
+```
 SELECT a, b FROM C WHERE a = 10 ORDER BY b
 ```
 
@@ -128,7 +128,7 @@ So the basic approach is that they build a tree of possible approaches for joini
 
 Example from paper:
 
-```         
+```
 SELECT NAME,TITLE,SAL,DNAME
 FROM EMP,DEPT,JOB
 WHERE TITLE=‘CLERK’

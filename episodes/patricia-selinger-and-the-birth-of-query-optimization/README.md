@@ -2,9 +2,9 @@
 
 ## Episode Overview
 
-A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization — a technique that underpins virtually every relational database in use today.
+A deep dive into one of the most influential papers in database history: Patricia Selinger's 1979 SIGMOD paper "Access Path Selection in a Relational Database Management System." We explore how Selinger and the IBM System R team invented cost-based query optimization, a technique that still underpins virtually every relational database in use today.
 
-**Episode type:** Topic
+**Episode type:** Topic\
 **Hosts:** Mike & Erik
 
 ## Music Segment
@@ -12,6 +12,14 @@ A deep dive into one of the most influential papers in database history: Patrici
 Erik Music:
 
 Mike Music: *Into Oblivion* - Lamb of God
+
+A couple of metal bands that have been around for a long time recently put out new albums. One is *An Undying Love for a Burning World* by Neurosis, which garnered a lot of critical acclaim (currently a 92 on Metacritic). The other is *Into Oblivion* by Lamb of God. I like them both but sort of prefer the latter. It's super aggro, and a little bit cliche at points, but this is kind of what i needed right now. My favorite track is The Killing Floor, which has the charming chorus:
+
+> Bow down to the butcher,
+>
+> Slaughtering your future,
+>
+> On the killing floor.
 
 ------------------------------------------------------------------------
 
@@ -41,7 +49,9 @@ AND departments.location = 'New York'
 
 There are many ways to execute this: - Which table do you scan first? - Do you use an index or a full scan? - For a join of N tables, there are N! possible orderings — for 10 tables that's 3.6 million
 
-Before Selinger's work, systems used **heuristics** — rule-of-thumb decisions baked in by programmers. The System R team wanted something better: a principled, *cost-based* approach.
+#### Cost-Based Optimization
+
+Before Selinger's work, systems used **heuristics** — rule-of-thumb decisions baked in by programmers. The System R team wanted something better: a principled, *cost-based* approach. Here "cost" does not literally mean \$, but rather the amount of I/O and computation.
 
 I think when most programmers start working with SQL they're unaware that there are potentially different ways in which the query can be executed. What probably happens is that a query turns out to be slower than expected so that the programmer is motivated to figure out why. As some point in this process she discovers EXPLAIN, a keyword that can be prepended to a query to show the query plan. The plan is the strategy that the database engine uses to get the requested records in the most efficient way. The efficiency is treated in terms of *cost*, which is basically a measure of the I/O and computation needed to execute the query.
 
@@ -69,15 +79,27 @@ This is an important bit, because the cost-based optimizer is dependent on getti
 
 > To find the cheapest access plan for a single relation query, we need only to examine the cheapest access path which produces tuples in each “interesting” order and the cheapest “unordered” access path.
 
+#### Selectivity Estimation
+
+For a predicate like `age > 30`, the optimizer estimates what fraction of rows will match — the **selectivity factor**. The paper introduced formulas still recognizable in modern systems:
+
+-   Equality predicate on a column with K distinct values → selectivity = 1/K
+
+-   Range predicate → selectivity = (max - value) / (max - min)
+
+-   Multiple predicates joined by AND → multiply selectivities (independence assumption)
+
+This independence assumption is famously a source of error and has driven decades of follow-on research (histograms, sketches, ML-based cardinality estimation).
+
 #### Examples
 
-``` SQL
+``` sql
 SELECT a,b FROM C
 ```
 
 -   Segment scan is only option because there are no predicates
 
-```
+``` sql
 SELECT a,b FROM C WHERE a = 10
 ```
 
@@ -86,7 +108,7 @@ SELECT a,b FROM C WHERE a = 10
     -   Index scan onfull scan or index scan if there's an index on A
     -   Probably uses index scan path (i think maybe there's case where the index loses, say if there are only 2 values of "a")
 
-```
+``` sql
 SELECT a,b FROM C WHERE a = 10 and b > 100
 ```
 
@@ -95,7 +117,9 @@ SELECT a,b FROM C WHERE a = 10 and b > 100
     -   index scan on a
     -   index scan on b
 
-```
+##### Interesting Orders
+
+``` sql
 SELECT a, b FROM C WHERE a = 10 ORDER BY b
 ```
 
@@ -103,7 +127,7 @@ This is the case where *interesting orders* comes into play. The paths here are 
 
 In this case even if the "a" index is lower cost than the "b" index, the cost has to included the extra sort step.
 
-### Joins
+#### Joins
 
 Joins get hard because you have to consider all of the stuff from the single relation case, but also the *order* in which joins occur, and also which type of join will be best.
 
@@ -111,24 +135,23 @@ Even if the query has the tables in a particular order, the planner might use a 
 
 > A heuristic is used to reduce the join order permutations which are considered. When possible, the search is reduced by consideration only of join orders which have join predicates relating the inner relation to the other relations already participating in the join
 
-Two types of join considered: nested loop, and merge join. Merge join takes advantange of indexes on join columns, which avoids needing to rescan entire inner relation.
+##### Join Types
 
-> The search tree is constructed by iteration on the number of relations joined so far. First, the best way is found to access each single relation for each interesting tuple ordering and for the unordered case.
-> Next, the best way of joining any relation to these is found, subject to the heuristics
-> for join order. This produces solutions for joining pairs of relations. Then the best
-> way to join sets of three relations is found by consideration of all sets of two relations and joining in each third relation
-> permitted by the join order heuristic
+Two types of join considered in the paper: nested loop, and merge join. Merge join takes advantange of indexes on join columns, which avoids needing to rescan entire inner relation. Hash joins weren't really a thing until the 1980s, primarily because they take a lot more memory.
 
-I think this is the "dynamic programming" approach? I think the cost in joins is always based on the scan of "outer" join plus the scan of the "inner", but the outer join might be the cumulative results of prior joins.
+##### Dynamic Programming
+
+> The search tree is constructed by iteration on the number of relations joined so far. First, the best way is found to access each single relation for each interesting tuple ordering and for the unordered case. Next, the best way of joining any relation to these is found, subject to the heuristics for join order. This produces solutions for joining pairs of relations. Then the best way to join sets of three relations is found by consideration of all sets of two relations and joining in each third relation permitted by the join order heuristic
+
+I think this is the "dynamic programming" approach? I think the cost in joins is always based on the scan of "outer" join plus the scan of the "inner", but the outer join might be the cumulative results of prior joins. It has the structure of a classic dynamic programming problem.
 
 So the basic approach is that they build a tree of possible approaches for joining the tables, and then choose the "path" with the lowest cost. Most of the cost is again just cardinalities of the relations, but again sort orders and join methods have to be considered.
 
-> The number of solutions which must be
-> stored is at most 2\*\*n (the number of subsets of n tables) times the number of interesting result orders
+> The number of solutions which must be stored is at most 2\*\*n (the number of subsets of n tables) times the number of interesting result orders
 
 Example from paper:
 
-```
+``` sql
 SELECT NAME,TITLE,SAL,DNAME
 FROM EMP,DEPT,JOB
 WHERE TITLE=‘CLERK’
@@ -139,7 +162,50 @@ AND EMP.JOB=JOB.JOB
 
 In the join, they first look at scanning options for EMP, DEPT, and JOB.
 
-Then they work on the join (EMP, DEPT), (EMP, JOB), (DEPT, EMP) and (JOB, EMP), but not (DEPT, JOB) or (JOB, DEPT) because there's not join predicate for them.
+Then they work on the join (EMP, DEPT), (EMP, JOB), (DEPT, EMP) and (JOB, EMP), but not (DEPT, JOB) or (JOB, DEPT) because there's no join predicate for them.
+
+And so forth... a couple of details:
+
+The approach used here is now called "left-deep" because it's grouped like ((A join B) join C) join D. There are apparently later optimizer that used "right-deep" and then something called "bushy trees", which are grouped like (A join B) join (C join D). The latter is easier to parallelize. Left-deep was apparently the best choice at the time because it was memory efficient.
+
+The predicates on equijoins are also "interesting orders". Since these can extend across multiple tables, they are organized into "equivalence classes" (a term from set theory).
+
+> To minimize the number of different interesting orders
+> and hence the number of solutions in the tree, equivalence classes for interesting
+> orders are computed and only the best solution for each equivalence class is saved.
+> For example, if there is a join predicate
+> E.DNO = D.DNO and another join predicate
+> D.DNO = F.DNO then all three of these columns belong to the same order equivalence class.
+
+##### Computational Complexity
+
+Apparently JOIN ordering is NP-hard if you do the full N! set of possible orderings. So, the dynamic programming approach does not necessarily give the best possible answer even if the table/index statistics are perfect.
+
+##### **The independence assumption**
+
+> Many optimizers do not model highly correlated data really well. For example, 90210 is a zip code that’s only in California. Zip codes are not evenly distributed across states, and there isn’t a 90210 in every state of the union. For a user request, nailing down the zip code to 90210 is sufficient and applying another predicate, such as state equals California, doesn’t change the result. It won’t reduce the number of rows because the only 90210 is in California.
+
+I think most CBOs still have this independence assumption for the most part, but i did read something recently about order dependence. In other words, if you have a predicate on some field that doesn't have an index, the optimizer might use a different index if that field has the same sort order as another field.
+
+#### Connection to Current Optimizers
+
+The CBO in System R went straight into IBMs DB2.
+
+Cost-based optimizers are still pretty much the main thing being used in current RDMS. Postgres has a version of CBO, but also something called the [Genetic Query Optimizer (geqo)](https://www.postgresql.org/docs/current/geqo.html) that kicks in when there a lot of tables in a join.
+
+A couple of modern versions of CBO came out in the 90s, the Volcano and then Cascades optimizer frameworks. SQL Server uses something called Calcite that's based on Volcano.
+
+There were some papers around 2020/2021 talking about machine-learning based optimizers, but i don't know if any of them are in production.
+
+##### Cardinality Estimation
+
+An ongoing issue with CBOs is that they need good statistics on the tables and indexes. A paper from 2015 (How Good are Query Optimizers, Really?) talks about this and how bad cardinality estimates affect plans negatively.
+
+> We have also shown that relational database systems produce large
+> estimation errors that quickly grow as the number of joins increases,
+> and that these errors are usually the reason for bad plans.
+
+A recent paper that was in CACM this year talks about something called "Cardinality Estimation Graphs", so this is still a problem of interest.
 
 ------------------------------------------------------------------------
 
@@ -150,46 +216,10 @@ Patricia G. Selinger, Morton M. Astrahan, Donald D. Chamberlin, Raymond A. Lorie
 *Proceedings of ACM SIGMOD, 1979*
 
 -   📄 [PDF (Duke CS)](https://courses.cs.duke.edu/compsci516/cps216/spring03/papers/selinger-etal-1979.pdf)
+
 -   🔗 [Semantic Scholar](https://www.semanticscholar.org/paper/Access-path-selection-in-a-relational-database-Selinger-Astrahan/7def002796277facffe02aa09e3a1bb101ec0785)
+
 -   🔗 [IBM Research entry](https://research.ibm.com/publications/access-path-selection-in-a-relational-database-management-system)
-
-### Core Ideas
-
-#### 1. Cost-Based Optimization
-
-Instead of hardcoded heuristics, the optimizer enumerates candidate execution plans and assigns each an *estimated cost* — measured in I/O operations and CPU time. It then selects the cheapest plan. Cost estimates are derived from **catalog statistics** (cardinality of tables, number of distinct values, etc.).
-
-#### 2. Selectivity Estimation
-
-For a predicate like `age > 30`, the optimizer estimates what fraction of rows will match — the **selectivity factor**. The paper introduced formulas still recognizable in modern systems: - Equality predicate on a column with K distinct values → selectivity = 1/K - Range predicate → selectivity = (max - value) / (max - min) - Multiple predicates joined by AND → multiply selectivities (independence assumption)
-
-This independence assumption is famously a source of error and has driven decades of follow-on research (histograms, sketches, ML-based cardinality estimation).
-
-#### 3. Dynamic Programming for Join Ordering
-
-Rather than exhaustive search (N! plans), the optimizer uses **dynamic programming**: build optimal plans for subsets of relations bottom-up, exploiting the principle of optimality. This reduces the search space from factorial to exponential — still expensive for very large joins, but tractable for the typical case.
-
-System R focused specifically on **left-deep plans** (linear join trees where one input is always a base relation), which further constrains the search space and maps naturally to a pipeline execution model.
-
-#### 4. Interesting Orders (the Subtle Genius)
-
-This is perhaps the paper's most elegant insight. When evaluating plans, you don't just track the cheapest plan for each subset of relations — you also track the cheapest plan *for each "interesting ordering"* of the output.
-
-An ordering is **interesting** if it's useful to some later operator: e.g., if the query has `ORDER BY dept`, or if a downstream join can exploit the sort. A plan that's slightly more expensive but produces sorted output may end up being globally optimal because it avoids a sort step later.
-
-This idea — tracking a Pareto frontier of cost vs. output properties — is a precursor to modern concepts like physical properties in the Volcano/Cascades optimizer frameworks.
-
-------------------------------------------------------------------------
-
-## Key Concepts for Discussion
-
--   **Declarative vs. procedural queries**: why giving up control to the optimizer felt radical in 1979
--   **The cost model**: what statistics System R maintained and how they estimated I/O vs. CPU costs
--   **The independence assumption**: simple, wrong, and still everywhere — what's been done about it?
--   **Left-deep vs. bushy join trees**: why System R restricted the search space and when that matters
--   **Interesting orderings**: how this small insight has giant downstream effects
--   **The optimizer as a compiler**: query optimization as a code generation problem
--   **How the System R optimizer became DB2**: the paper's ideas were taken nearly verbatim into production
 
 ------------------------------------------------------------------------
 

@@ -263,38 +263,6 @@ Patricia G. Selinger, Morton M. Astrahan, Donald D. Chamberlin, Raymond A. Lorie
 
 ------------------------------------------------------------------------
 
-## Discussion Questions
-
-1.  **On the leap of faith**: In 1979, trusting a machine to pick the best query plan felt radical. What had to be true about the state of computing for this to be accepted? Would it have been accepted earlier? Later?
-
-2.  **The math background angle**: Selinger came from applied mathematics, not CS. How much did that shape the cost-based framing vs. a more CS-heuristics approach?
-
-3.  **The independence assumption**: The paper assumes column predicates are independent when estimating selectivity. Every database researcher knows this is wrong. Why has it persisted for 45 years?
-
-4.  **Interesting orders as a design principle**: The idea of tracking "useful properties" of intermediate results beyond just cost is powerful. Where else in computing do we see this kind of multi-objective optimization?
-
-5.  **From research to product**: The System R optimizer went into DB2 "lock, stock, and barrel." How often does that happen? What made System R unusual?
-
-6.  **Modern query optimization**: With ML-based cardinality estimation (Bao, Neo, etc.) getting real traction in the 2020s, is the Selinger approach finally being superseded? Or augmented?
-
-7.  **The join ordering problem is NP-hard**: Modern systems cheat in various ways (heuristics above a join threshold, genetic algorithms, memoization). What are the tradeoffs?
-
-------------------------------------------------------------------------
-
-## Interesting Stories & Angles
-
--   **The skeptics were loud**: Mike Stonebraker was a prominent critic who argued relational databases would always be too slow. System R was a direct rebuttal. Selinger's optimizer was a key reason the performance story improved.
-
--   **The paper almost didn't happen the way it did**: Selinger has described in interviews how the team debated whether to publish — IBM was protective of the work given its commercial value. The decision to publish at SIGMOD 1979 shaped the entire field.
-
--   **The "interesting orders" naming**: The term itself is charmingly informal for something so mathematically precise. It's remained in the literature for 45+ years.
-
--   **The ACM Queue interview (2006)**: Conducted by James Hamilton (later of AWS fame), Selinger is candid about the evolution of the optimizer, what she'd do differently, and the challenge of moving research to product. Worth quoting directly.
-
--   **The CACM Database Dialogue (2008)**: Another rich interview where she reflects on 30+ years of database history and the state of the field.
-
-------------------------------------------------------------------------
-
 ## Further Reading
 
 -   [Access Path Selection paper (PDF)](https://courses.cs.duke.edu/compsci516/cps216/spring03/papers/selinger-etal-1979.pdf)
@@ -305,7 +273,3 @@ Patricia G. Selinger, Morton M. Astrahan, Donald D. Chamberlin, Raymond A. Lorie
 -   [System R: Database Research Retrospective — TODS 1981](https://dl.acm.org/doi/10.1145/319996.319997)
 -   Graefe, G. (1995). *The Cascades Framework for Query Optimization* — direct intellectual successor
 -   Leis et al. (2015). [*How Good Are Query Optimizers, Really?*](https://vldb.org/pvldb/vol9/p204-leis.pdf) PVLDB Vol. 9 — introduces the Join Order Benchmark (JOB) and empirically audits modern optimizers; finds cardinality estimation errors (not cost models or plan enumeration) are the dominant cause of bad plans — a direct stress-test of Selinger's independence assumption
-
-------------------------------------------------------------------------
-
-*Research compiled: April 2026*

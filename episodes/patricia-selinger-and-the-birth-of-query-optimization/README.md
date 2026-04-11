@@ -9,7 +9,7 @@ A deep dive into one of the most influential papers in database history: Patrici
 
 ## Music Segment
 
-Erik Music:
+Erik Music: Bill Evans - *Conversations with Myself*. Sad, quiet, jazz piano. Evans Miles Davis' piano player for much of Kind of Blue and other records. He was a classically trained pianist who made this beautiful-sounding music that I've been listening to for 30 years. This record in particular I come back to every so often: he did this ambitious thing where he'd record one track, play it back and record another while "accompany himself on piano." He did this over **three separate piano tracks**, like he was his own trio. *There are no other instruments* (or musicians) contributing to the record. What he's doing is probably very hard, but there's an intricate and layered aspect to it.  It's unlike anything I've ever heard anywhere else and it feels like there are puzzle-boxes in my brain where the only keys to open them are the piano sounds from this record. Sometimes I need a quiet, contemplative awakening, and this one of the greatest pieces of music ever recorded, so it helps me.
 
 Mike Music: *Into Oblivion* - Lamb of God
 

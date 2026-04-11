@@ -65,6 +65,18 @@ Some things that effect the plan:
 
 -   Ordering (and grouping)
 
+### Preamble: How does SQL processing work internally?
+
+> Each SQL statement is sent to the parser, where it is checked for correct syntax. A query block is represented by a SELECT list, a FROM list, and a WHERE tree, containing, respectively the list of items to be retrieved, the table(s) referenced, and the boolean combination of simple predicates specified by the user.
+
+> The four phases of statement processing are **parsing**, **optimization**, **code generation**, and **execution**.
+
+This paper is mostly going to talk about **optimization** and **code generation**
+
+> After a plan is chosen for each query block and represented in the parse tree, the CODE GENERATOR is called. The CODE GENERATOR is a table-driven program which translates ASL trees into machine language code to execute the plan chosen by the OPTIMIZER. In doing this it uses a relatively small number of code templates, one for each type of join method (including no join).
+
+I was surprised there's a lookup table driving this?
+
 ### The Single Table Case
 
 Two possibilities: - Segment scan (scan the whole table) - Index scan
@@ -78,18 +90,6 @@ The optimizer has to get a set of statistics from the database catalog
 This is an important bit, because the cost-based optimizer is dependent on getting accurate cardinalities for relations and indexes.
 
 > To find the cheapest access plan for a single relation query, we need only to examine the cheapest access path which produces tuples in each “interesting” order and the cheapest “unordered” access path.
-
-**How does SQL processing work internally?**
-
-> Each SQL statement is sent to the parser, where it is checked for correct syntax. A query block is represented by a SELECT list, a FROM list, and a WHERE tree, containing, respectively the list of items to be retrieved, the table(s) referenced, and the boolean combination of simple predicates specified by the user.
-
-> The four phases of statement processing are **parsing**, **optimization**, **code generation**, and **execution**.
-
-This paper is mostly going to talk about **optimization** and **code generation**
-
-> After a plan is chosen for each query block and represented in the parse tree, the CODE GENERATOR is called. The CODE GENERATOR is a table-driven program which translates ASL trees into machine language code to execute the plan chosen by the OPTIMIZER. In doing this it uses a relatively small number of code templates, one for each type of join method (including no join).
-
-I was surprised there's a lookup table driving this?
 
 #### Selectivity Estimation
 
